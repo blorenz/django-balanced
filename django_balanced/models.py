@@ -4,11 +4,11 @@ from datetime import datetime
 import balanced
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 
+from django.contrib.auth import get_user_model
 
 class BalancedException(Exception):
     pass
@@ -54,7 +54,7 @@ class BalancedResource(models.Model):
 class BankAccount(BalancedResource):
     _resource = balanced.BankAccount
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='bank_accounts',
                              null=True)
     account_number = models.CharField(editable=False, max_length=255)
@@ -112,7 +112,7 @@ class BankAccount(BalancedResource):
 class Card(BalancedResource):
     _resource = balanced.Card
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='cards',
                              null=False)
     name = models.CharField(editable=False, max_length=255)
@@ -161,7 +161,7 @@ class Card(BalancedResource):
 class Credit(BalancedResource):
     _resource = balanced.Credit
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='credits',
                              editable=False,
                              null=True)
@@ -208,7 +208,7 @@ class Credit(BalancedResource):
 class Debit(BalancedResource):
     _resource = balanced.Debit
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='debits',
                              null=False)
     amount = models.DecimalField(editable=False,
@@ -252,7 +252,7 @@ class Debit(BalancedResource):
 class Account(BalancedResource):
     _resource = balanced.Account
 
-    user = models.OneToOneField(User, related_name='balanced_account')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='balanced_account')
 
     class Meta:
         db_table = 'balanced_accounts'
@@ -291,4 +291,4 @@ def create_user_profile(sender, instance, created, **kwargs):
     Account.objects.get_or_create(user=instance)
 
 
-post_save.connect(create_user_profile, sender=User)
+post_save.connect(create_user_profile, sender=get_user_model())
