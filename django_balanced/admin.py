@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 
 from django.contrib.auth import get_user_model
 
-from django_balanced.models import BankAccount, Credit
+from django_balanced.models import BankAccount, Credit, Debit
 
 """
 TODO:
@@ -171,3 +171,4 @@ class CreditAdmin(BalancedAdmin):
 
 admin.site.register(BankAccount, BankAccountAdmin)
 admin.site.register(Credit, CreditAdmin)
+admin.site.register(Debit)
