@@ -260,7 +260,7 @@ class Account(BalancedResource):
     def save(self, **kwargs):
         if not self.uri:
             ac = balanced.Account(
-                name=self.user.username,
+                name=self.user.email,
             )
             try:
                 ac.save()
